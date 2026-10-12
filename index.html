@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Object Confessions · Every object has a secret</title>
+<style>
+:root{--h:330;--acc:hsl(var(--h),95%,66%);--acc2:hsl(calc(var(--h) + 70),95%,64%);--gold:#ffd166;--bg:#0a0612;--card:rgba(24,16,40,.72);--line:rgba(255,255,255,.12);--tx:#f6f1ff;--mut:#a79dc0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;overflow-x:hidden}
+.blob{position:fixed;border-radius:50%;filter:blur(90px);opacity:.45;z-index:0;pointer-events:none;transition:background 1s}
+.b1{width:520px;height:520px;background:var(--acc);top:-160px;left:-120px;animation:f1 18s ease-in-out infinite}
+.b2{width:460px;height:460px;background:var(--acc2);bottom:-140px;right:-100px;animation:f2 22s ease-in-out infinite}
+.b3{width:340px;height:340px;background:#38bdf8;top:40%;left:55%;opacity:.22;animation:f1 26s ease-in-out infinite reverse}
+@keyframes f1{50%{transform:translate(90px,70px) scale(1.15)}}
+@keyframes f2{50%{transform:translate(-80px,-60px) scale(1.1)}}
+.fl{position:fixed;font-size:34px;opacity:.14;z-index:0;pointer-events:none;animation:up 20s linear infinite}
+@keyframes up{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-20vh) rotate(360deg)}}
+.wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:26px 16px 80px}
+.logo{display:flex;align-items:center;gap:10px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font:800 clamp(38px,8vw,64px)/1.05 Georgia,'Times New Roman',serif;margin:10px 0 8px;letter-spacing:-.5px}
+h1 span{background:linear-gradient(90deg,var(--acc),var(--gold),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.tag{color:var(--mut);font-size:17px;max-width:560px;margin:0 0 18px}
+.ticker{min-height:92px;border:1px solid var(--line);border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));backdrop-filter:blur(8px);margin-bottom:18px;position:relative;overflow:hidden}
+.ticker:before{content:"“";position:absolute;left:12px;top:-14px;font:900 90px Georgia;color:var(--acc);opacity:.35}
+#tq{font:italic 22px/1.4 Georgia,serif;padding-left:26px;transition:opacity .5s}
+#tw{padding-left:26px;color:var(--gold);font-size:13px;margin-top:4px;transition:opacity .5s;letter-spacing:.04em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 6px;text-transform:uppercase;letter-spacing:.08em}
+input,select{width:100%;background:rgba(0,0,0,.35);color:var(--tx);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:15px system-ui}
+input:focus,select:focus{outline:2px solid var(--acc);border-color:transparent}
+button{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:0;border-radius:14px;padding:13px 20px;font:700 15px system-ui;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3);transition:transform .15s}
+button:hover{transform:translateY(-2px)}
+button:disabled{opacity:.5;transform:none}
+button.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--tx);font-weight:600;padding:10px 14px;font-size:13px;box-shadow:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1;min-width:140px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:13.5px;cursor:pointer;user-select:none;transition:.15s}
+.chip:hover{border-color:var(--acc)}
+.chip.on{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;font-weight:700}
+.keyok{display:none;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:#8dffb5}
+.keyok button{flex:0}
+.stage{position:relative;border-radius:18px;overflow:hidden;background:rgba(0,0,0,.45);min-height:230px;display:flex;align-items:center;justify-content:center;margin-top:14px;border:1px dashed var(--line)}
+.stage video,.stage img{width:100%;max-height:430px;object-fit:cover;display:block}
+.hint{color:var(--mut);padding:40px 20px;text-align:center;font-size:15px}
+.hint b{display:block;font-size:42px;margin-bottom:6px}
+#reveal{display:none;margin-top:20px}
+.badge{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;color:var(--gold);margin:0 6px 8px 0;background:rgba(255,255,255,.05)}
+.name{font:800 30px Georgia,serif;margin:2px 0 10px}
+.cap{position:relative;font:italic 700 clamp(22px,4.4vw,32px)/1.3 Georgia,serif;padding:18px 20px 18px 26px;border-radius:16px;margin:8px 0 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 30%,transparent),color-mix(in srgb,var(--acc2) 22%,transparent));border:1px solid var(--line)}
+.cap:before{content:"“";position:absolute;left:6px;top:-18px;font:900 80px Georgia;color:var(--gold);opacity:.8}
+.confession{font:19px/1.8 Georgia,serif;border-left:3px solid var(--acc);padding-left:16px;margin:12px 0;white-space:pre-wrap}
+.facts{background:rgba(0,0,0,.3);border:1px dashed rgba(255,209,102,.4);border-radius:14px;padding:12px 16px;font-size:14.5px;color:#e8defa}
+.facts b{color:var(--gold)}
+.grudge{margin-top:12px;font:italic 16px Georgia,serif;color:var(--acc)}
+.msg{margin:9px 0;padding:11px 14px;border-radius:14px;font-size:15px;line-height:1.55}
+.msg.me{background:rgba(255,255,255,.1);margin-left:14%}
+.msg.obj{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid var(--line);margin-right:10%;font-family:Georgia,serif;font-size:16.5px}
+.err{color:#ff8a8a;font-size:14px;margin-top:12px;padding:10px 12px;border:1px solid rgba(255,138,138,.4);border-radius:12px;background:rgba(255,80,80,.08)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.pulse{animation:p 1.4s ease-in-out infinite}
+@keyframes p{50%{opacity:.4}}
+.foot{color:var(--mut);font-size:12px;margin-top:26px;text-align:center}
+small{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="fl" style="left:6%;animation-delay:0s">☕</span><span class="fl" style="left:22%;animation-delay:-6s">🔑</span>
+<span class="fl" style="left:40%;animation-delay:-12s">🪑</span><span class="fl" style="left:62%;animation-delay:-3s">📱</span>
+<span class="fl" style="left:80%;animation-delay:-9s">🪴</span><span class="fl" style="left:92%;animation-delay:-15s">🔌</span>
+
+<div class="wrap">
+  <div class="logo">👁 Powered by Gemma 4</div>
+  <h1>Object <span>Confessions</span></h1>
+  <p class="tag">Every object around you has been watching. Point your camera at one and hear what it really thinks of you.</p>
+
+  <div class="ticker"><div id="tq"></div><div id="tw"></div></div>
+
+  <div class="card">
+    <!-- API key: asked once, remembered -->
+    <div id="keyBox">
+      <label>Step 1 · Your free Gemini API key <small>(get one at aistudio.google.com, saved on this device)</small></label>
+      <div class="row">
+        <input id="key" type="password" placeholder="Paste key here (starts with AIza...)" autocomplete="off" style="flex:3">
+        <button id="saveKey" style="flex:1">Save key</button>
+      </div>
+    </div>
+    <div class="keyok" id="keyOk">✅ Key saved on this device
+      <button class="ghost" id="chgKey">Change</button>
+      <button class="ghost" id="magic">🔗 Copy link with my key</button>
+    </div>
+
+    <label>Its personality</label>
+    <div class="chips" id="moods"></div>
+
+    <div class="row">
+      <div><label>Language</label>
+        <select id="lang">
+          <option value="English|en-IN">English</option><option value="Hindi|hi-IN">हिन्दी (Hindi)</option>
+          <option value="Telugu|te-IN">తెలుగు (Telugu)</option><option value="Tamil|ta-IN">தமிழ் (Tamil)</option><option value="Spanish|es-ES">Español</option>
+        </select></div>
+      <div><label>Model</label>
+        <select id="model"><option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it (fast)</option><option value="gemma-4-31b-it">gemma-4-31b-it (stronger)</option></select></div>
+    </div>
+
+    <div class="stage" id="stage"><div class="hint"><b>🫣</b>Open the camera or upload a photo of any object.<br>A chai cup. A chair. Your keys. Your charger.</div></div>
+    <video id="vid" playsinline muted style="display:none"></video>
+
+    <div class="row" style="margin-top:14px">
+      <button id="cam">📷 Open camera</button>
+      <button id="snap" style="display:none">⚡ Make it confess</button>
+      <button class="ghost" id="up">🖼 Upload photo</button>
+    </div>
+    <input id="file" type="file" accept="image/*" hidden>
+    <div id="status"></div>
+  </div>
+
+  <div id="reveal">
+    <div class="card">
+      <div id="badges"></div>
+      <div class="name" id="oname"></div>
+      <div class="cap" id="cap"></div>
+      <div class="confession" id="conf"></div>
+      <div class="facts" id="facts"></div>
+      <div class="grudge" id="grudge"></div>
+      <div class="row" style="margin-top:16px">
+        <button class="ghost" id="speak">🔊 Hear it speak</button>
+        <button class="ghost" id="share">⬇ Save confession card</button>
+        <button class="ghost" id="again">🔁 Confess again</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div style="font:800 17px Georgia,serif;margin-bottom:6px">🕵️ Interrogate it</div>
+      <div id="chat"></div>
+      <div class="chips" id="sugg" style="margin:10px 0"></div>
+      <div class="row">
+        <input id="q" placeholder="Ask it anything... 'who touches you the most?'" style="flex:3">
+        <button id="ask" style="flex:1">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">Photos go from your browser straight to Google's Gemini API. Nothing is stored on any server. Objects are fictional narrators; the facts inside are meant to be true, so double-check anything important.</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const DEFAULT_KEY='';   // optional: paste your key here ONLY if you accept that anyone can see it
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const MODELS=['gemma-4-26b-a4b-it','gemma-4-31b-it'];
+const API='https://generativelanguage.googleapis.com/v1beta/models/';
+
+/* ---------- storage that survives (localStorage + session + cookie + memory) ---------- */
+const mem={};
+const store={
+  get(k){let v='';
+    try{v=localStorage.getItem(k)||''}catch(e){}
+    if(!v)try{v=sessionStorage.getItem(k)||''}catch(e){}
+    if(!v){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));if(m)v=decodeURIComponent(m[1])}
+    return v||mem[k]||''},
+  set(k,v){mem[k]=v;
+    try{localStorage.setItem(k,v)}catch(e){}
+    try{sessionStorage.setItem(k,v)}catch(e){}
+    try{document.cookie=k+'='+encodeURIComponent(v)+';max-age=31536000;path=/;SameSite=Lax'}catch(e){}}
+};
+// key from link: yoursite/#key=AIza...  (saved, then removed from the address bar)
+(function(){try{
+  const u=new URL(location.href);
+  const k=u.searchParams.get('key')||new URLSearchParams(location.hash.slice(1)).get('key');
+  if(k){store.set('ck',k.trim());history.replaceState(null,'',location.pathname)}
+}catch(e){}})();
+const apiKey=()=>store.get('ck')||DEFAULT_KEY;
+function keyUI(){const has=!!apiKey();$('keyBox').style.display=has?'none':'block';$('keyOk').style.display=has?'flex':'none'}
+$('saveKey').onclick=()=>{const v=$('key').value.trim();if(v.length<20){$('status').innerHTML='<div class="err">That key looks too short. Copy the full key from aistudio.google.com.</div>';return}
+  store.set('ck',v);$('key').value='';$('status').innerHTML='';keyUI()};
+$('chgKey').onclick=()=>{$('keyBox').style.display='block';$('keyOk').style.display='none';$('key').focus()};
+$('magic').onclick=async()=>{const l=location.origin+location.pathname+'#key='+apiKey();
+  try{await navigator.clipboard.writeText(l);$('magic').textContent='✅ Copied! (keep it private)'}catch(e){prompt('Copy this link:',l)}};
+$('model').value=store.get('om')||MODELS[0]; $('model').onchange=()=>store.set('om',$('model').value);
+$('lang').value=store.get('ol')||'English|en-IN'; $('lang').onchange=()=>store.set('ol',$('lang').value);
+keyUI();
+
+/* ---------- personalities (each re-colours the whole page) ---------- */
+const MOODS=[
+ {n:'Dramatic & tragic',e:'🎭',h:335},{n:'Passive-aggressive',e:'😒',h:45},{n:'Wise old philosopher',e:'🧙',h:200},
+ {n:'Dangerously overconfident',e:'😎',h:20},{n:'Gossipy',e:'🤭',h:290},{n:'Haunted',e:'👻',h:265},{n:'Villain monologue',e:'😈',h:355}];
+let mood=MOODS[store.get('omd')|0]||MOODS[0];
+function setMood(i){mood=MOODS[i];store.set('omd',String(i));document.documentElement.style.setProperty('--h',mood.h);
+  document.querySelectorAll('#moods .chip').forEach((c,j)=>c.classList.toggle('on',j===i))}
+MOODS.forEach((m,i)=>{const c=document.createElement('span');c.className='chip';c.textContent=m.e+' '+m.n;c.onclick=()=>setMood(i);$('moods').appendChild(c)});
+setMood(Math.max(0,MOODS.indexOf(mood)));
+
+/* ---------- rotating captions: what objects really say ---------- */
+const QUOTES=[
+ ['Please stop putting me on the edge of the table. I have feelings, and gravity.','Chai cup'],
+ ['You say “five more minutes.” I have watched you say it for three hours.','Pillow'],
+ ['I was a mountain once. Now I hold your keys. Do not ask me how I feel.','Key'],
+ ['Every night you hug me, every morning you forget my name. I am your charger.','Phone charger'],
+ ['I have held your secrets, your snacks and your laptop. Respect the chair.','Chair'],
+ ['You water me when you remember. I remember everything.','Plant'],
+ ['Do you know how many times you looked at me and did nothing? I do.','Mirror'],
+ ['I am 70% water and 100% disappointed that you left me in the sun.','Water bottle'],
+ ['You open me, close me, open me again. Make a decision.','Refrigerator']];
+let qi=0;function tick(){const q=QUOTES[qi++%QUOTES.length];$('tq').style.opacity=0;$('tw').style.opacity=0;
+  setTimeout(()=>{$('tq').textContent=q[0];$('tw').textContent='— the '+q[1].toLowerCase()+', overheard';$('tq').style.opacity=1;$('tw').style.opacity=1},450)}
+tick();setInterval(tick,5200);
+
+/* ---------- camera / upload ---------- */
+let stream=null,img=null,data=null,dataUrl='',chatLog=[],busy=false;
+$('cam').onclick=async()=>{
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    const v=$('vid');v.srcObject=stream;v.style.display='block';await v.play();
+    $('stage').innerHTML='';$('stage').appendChild(v);$('snap').style.display='block';$('cam').style.display='none';
+  }catch(e){$('status').innerHTML='<div class="err">Camera is blocked or not available. Tap “Upload photo” instead.</div>'}
+};
+function fromSource(src,w,h){const max=1024,r=Math.min(1,max/Math.max(w,h)),c=document.createElement('canvas');
+  c.width=Math.round(w*r);c.height=Math.round(h*r);c.getContext('2d').drawImage(src,0,0,c.width,c.height);return c}
+function setImage(c){dataUrl=c.toDataURL('image/jpeg',.85);img=dataUrl.split(',')[1];
+  const im=document.createElement('img');im.src=dataUrl;$('stage').innerHTML='';$('stage').appendChild(im)}
+$('snap').onclick=()=>{const v=$('vid');if(!v.videoWidth)return;setImage(fromSource(v,v.videoWidth,v.videoHeight));
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  $('snap').style.display='none';$('cam').style.display='block';$('cam').textContent='📷 Retake';confess()};
+$('up').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{setImage(fromSource(im,im.width,im.height));URL.revokeObjectURL(u);confess()};
+  im.onerror=()=>{$('status').innerHTML='<div class="err">Could not read that image. Try a JPG or PNG.</div>'};im.src=u;$('file').value=''};
+$('again').onclick=()=>confess();
+
+/* ---------- Gemma call: retries + automatic fallback to the other model ---------- */
+async function gemma(contents,maxTok){
+  const key=apiKey();
+  if(!key){keyUI();throw new Error('Add your Gemini API key first (top of the page).')}
+  const first=$('model').value,order=[first,...MODELS.filter(m=>m!==first)];let last='';
+  for(const model of order){
+    for(let a=0;a<2;a++){
+      let r,j;
+      try{
+        r=await fetch(API+model+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},
+          body:JSON.stringify({contents,generationConfig:{temperature:.95,maxOutputTokens:maxTok||3000}})});
+        j=await r.json().catch(()=>({}));
+      }catch(e){last='network problem, check your internet';await sleep(900);continue}
+      if(r.ok){
+        const p=(((j.candidates||[])[0]||{}).content||{}).parts||[];
+        const t=p.filter(x=>!x.thought).map(x=>x.text||'').join('').trim();
+        if(t)return t; last='empty answer for this photo';break;
+      }
+      const msg=(j.error&&j.error.message)||('HTTP '+r.status);
+      if((r.status===400&&/api key/i.test(msg))||r.status===401||r.status===403)
+        throw new Error('Your API key was rejected. Tap “Change” and paste the full key again, with no spaces.');
+      last=msg;
+      if([429,500,503].includes(r.status)){await sleep(1100*(a+1));continue}
+      break;
+    }
+  }
+  throw new Error('Google\'s server is busy right now. Wait 10 seconds and tap again. ('+String(last).slice(0,90)+')');
+}
+const langName=()=>$('lang').value.split('|')[0],langCode=()=>$('lang').value.split('|')[1];
+const persona=()=>`You are the OBJECT in the photo, brought to life. Personality: ${mood.n}. Language: ${langName()} (everything you write must be in it, natural and vivid).
+Speak in first person AS the object. Be funny, strange and emotional, but hide REAL, accurate facts about what you are made of, how you are manufactured, and your history or science inside the story. Never invent fake facts. Never mention being an AI.`;
+
+function parseLoose(raw){
+  const m=raw.replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
+  if(m){for(const s of [m[0],m[0].replace(/,\s*([}\]])/g,'$1')]){try{return JSON.parse(s)}catch(e){}}}
+  return null;
+}
+async function confess(){
+  if(!img||busy)return;busy=true;speechSynthesis&&speechSynthesis.cancel();
+  $('status').innerHTML='<div class="pulse" style="margin-top:14px;color:var(--mut)">🕯 The object is gathering the courage to speak...</div>';
+  $('reveal').style.display='none';
+  const prompt=persona()+`
+Look at the photo, identify the main object, and reply with ONLY a JSON object (no markdown, no text around it):
+{"object":"name of the object","emoji":"one emoji","age":"how old it feels, e.g. '3 years of suffering'","caption":"ONE punchy sentence, max 16 words, that sounds like the object's real spoken words, like a famous quote","confession":"a 90-120 word first-person monologue confessing its secret life, mixing real facts into the drama","real_facts":["3 short TRUE facts about this kind of object (materials, how it is made, history, science)"],"grudge":"one funny sentence about what it holds against the person holding the camera"}`;
+  try{
+    const turn={role:'user',parts:[{inline_data:{mime_type:'image/jpeg',data:img}},{text:prompt}]};
+    let raw=await gemma([turn],3000),d=parseLoose(raw);
+    if(!d){raw=await gemma([turn],3000);d=parseLoose(raw)}
+    if(!d){d={object:'Mystery object',emoji:'🫥',confession:raw.replace(/[{}"]/g,'').slice(0,700),real_facts:[],grudge:'',caption:raw.split(/[.!?]/)[0].slice(0,120)}}
+    if(!Array.isArray(d.real_facts))d.real_facts=d.real_facts?[String(d.real_facts)]:[];
+    data=d;chatLog=[];show();$('status').innerHTML='';
+  }catch(e){$('status').innerHTML='<div class="err">'+esc(e.message)+'</div>'}
+  busy=false;
+}
+function show(){
+  $('badges').innerHTML='<span class="badge">'+esc(mood.e+' '+mood.n)+'</span><span class="badge">Age: '+esc(data.age||'ancient')+'</span>';
+  $('oname').textContent=(data.emoji||'')+' '+(data.object||'Unknown object');
+  $('cap').textContent=data.caption||(data.confession||'').split(/(?<=[.!?])\s/)[0];
+  $('conf').textContent=data.confession||'';
+  $('facts').innerHTML='<b>🔎 Real facts hidden in that confession</b><br>'+(data.real_facts.length?data.real_facts.map(f=>'• '+esc(f)).join('<br>'):'(none returned)');
+  $('grudge').textContent=data.grudge?'Grudge: '+data.grudge:'';
+  $('chat').innerHTML='';
+  $('sugg').innerHTML='';['Who touches you the most?','Do you feel comfortable?','What is your biggest secret?','What do you think of me?'].forEach(t=>{
+    const c=document.createElement('span');c.className='chip';c.textContent=t;c.onclick=()=>{$('q').value=t;ask()};$('sugg').appendChild(c)});
+  $('reveal').style.display='block';$('reveal').scrollIntoView({behavior:'smooth'});
+  speak((data.caption?data.caption+' ':'')+(data.confession||''));
+}
+
+/* ---------- voice ---------- */
+function speak(t){
+  if(!t||!window.speechSynthesis)return;speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.lang=langCode();
+  const mv={'Haunted':[.7,.6],'Villain monologue':[.78,.8],'Wise old philosopher':[.85,.7],'Gossipy':[1.15,1.4],'Dangerously overconfident':[1.1,1.1]};
+  const m=mv[mood.n]||[1,1.05];u.rate=m[0];u.pitch=m[1];
+  const vs=speechSynthesis.getVoices(),v=vs.find(v=>v.lang===langCode())||vs.find(v=>v.lang.startsWith(langCode().slice(0,2)));
+  if(v)u.voice=v;speechSynthesis.speak(u);
+}
+$('speak').onclick=()=>speak((data.caption?data.caption+' ':'')+$('conf').textContent);
+window.speechSynthesis&&speechSynthesis.getVoices();
+
+/* ---------- interrogate (text only: light and reliable) ---------- */
+async function ask(){
+  const q=$('q').value.trim();if(!q||!data||busy)return;$('q').value='';$('ask').disabled=true;busy=true;
+  add(q,'me');const p=add('<span class="spin"></span>','obj');
+  try{
+    const prompt=persona()+'\nYou are: '+(data.object||'an object')+'. Your earlier confession: "'+(data.confession||'')+'"\n'+
+      (chatLog.length?'Conversation so far:\n'+chatLog.join('\n')+'\n':'')+
+      'The human now says to you: "'+q+'"\nAnswer in character as the object, in '+langName()+', max 70 words, still hiding one real fact. Plain text only, no JSON.';
+    const t=await gemma([{role:'user',parts:[{text:prompt}]}],1500);
+    chatLog.push('Human: '+q,'You: '+t);if(chatLog.length>12)chatLog=chatLog.slice(-12);
+    p.textContent=t;speak(t);
+  }catch(e){p.innerHTML='<span class="err" style="display:block;margin:0">'+esc(e.message)+'</span>'}
+  $('ask').disabled=false;busy=false;
+}
+function add(h,c){const d=document.createElement('div');d.className='msg '+c;d.innerHTML=h;$('chat').appendChild(d);d.scrollIntoView({block:'nearest'});return d}
+$('ask').onclick=ask;$('q').onkeydown=e=>{if(e.key==='Enter')ask()};
+
+/* ---------- shareable card ---------- */
+function wrap(x,text,px,y,w,lh,maxL){const words=text.split(' ');let line='',n=0;
+  for(const wd of words){const t=line+wd+' ';
+    if(x.measureText(t).width>w&&line){x.fillText(line.trim(),px,y);y+=lh;line=wd+' ';if(++n>=maxL-1){x.fillText(line.trim()+(words.length?'…':''),px,y);return y+lh}}else line=t}
+  x.fillText(line.trim(),px,y);return y+lh}
+$('share').onclick=()=>{const im=new Image();im.onload=()=>{
+  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const h=mood.h,A='hsl('+h+',95%,66%)',B='hsl('+(h+70)+',95%,64%)';
+  const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#1b0b33');g.addColorStop(.5,'#0a0612');g.addColorStop(1,'#1a0a28');x.fillStyle=g;x.fillRect(0,0,W,H);
+  const ph=560,r=Math.max(W/im.width,ph/im.height),sw=W/r,sh=ph/r;x.drawImage(im,(im.width-sw)/2,(im.height-sh)/2,sw,sh,0,0,W,ph);
+  const f=x.createLinearGradient(0,ph-200,0,ph);f.addColorStop(0,'rgba(10,6,18,0)');f.addColorStop(1,'#0a0612');x.fillStyle=f;x.fillRect(0,ph-200,W,200);
+  const bar=x.createLinearGradient(0,0,W,0);bar.addColorStop(0,A);bar.addColorStop(1,B);x.fillStyle=bar;x.fillRect(0,0,W,12);
+  x.fillStyle='#ffd166';x.font='bold 26px system-ui';x.fillText('OBJECT CONFESSIONS',50,64);
+  x.fillStyle='#fff';x.font='bold 56px Georgia';x.fillText((data.emoji||'')+' '+(data.object||''),50,ph+40);
+  x.fillStyle=A;x.font='bold 40px Georgia';let y=wrap(x,'“'+(data.caption||'')+'”',50,ph+110,W-100,52,3);
+  x.fillStyle='#e9e1f7';x.font='28px Georgia';y=wrap(x,(data.confession||''),50,y+20,W-100,42,8);
+  x.fillStyle=B;x.font='italic 26px Georgia';wrap(x,(data.grudge?'Grudge: '+data.grudge:''),50,Math.min(y+10,H-90),W-100,36,2);
+  x.fillStyle='#a79dc0';x.font='22px system-ui';x.fillText('Made with Gemma 4',50,H-30);
+  const a=document.createElement('a');a.download='confession-'+(data.object||'object').replace(/\W+/g,'-')+'.png';a.href=c.toDataURL('image/png');a.click()};
+  im.src=dataUrl};
+</script>
+</body>
+</html>
